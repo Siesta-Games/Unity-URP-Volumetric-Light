@@ -47,6 +47,8 @@ public sealed class VolumetricFogVolumeComponent : VolumeComponent, IPostProcess
 	public BoolParameter reflectionProbesContribution = new BoolParameter(false, BoolParameter.DisplayType.Checkbox, true);
 	[Tooltip("A weight factor for the light coming from reflection probes when the reflection probes contribution is enabled.")]
 	public ClampedFloatParameter reflectionProbesContributionWeight = new ClampedFloatParameter(0.1f, 0.0f, 1.0f);
+	[Tooltip("Control the influence of the volume modifier. At 0, it will completely ignore the volume, at 1, the volume settings will be fully taken into consideration for the density calculations.")]
+	public ClampedFloatParameter volumeModifierWeight = new ClampedFloatParameter(1.0f, 0.0f, 1.0f);
 
 	[Header("Noise")]
 	[Tooltip("The modes to use noise to modify the density of volumetric fog. Read the tooltips from each of the texture parameters to understand the channels set up and where to access the default provided resource.")]

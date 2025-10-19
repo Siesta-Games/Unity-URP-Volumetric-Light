@@ -89,6 +89,7 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 	private static readonly int AmbienceColorId = Shader.PropertyToID("_AmbienceColor");
 	private static readonly int APVContributionWeigthId = Shader.PropertyToID("_APVContributionWeight");
 	private static readonly int ReflectionProbesContributionWeightId = Shader.PropertyToID("_ReflectionProbesContributionWeight");
+	private static readonly int VolumeModifierWeightId = Shader.PropertyToID("_VolumeModifierWeight");
 	private static readonly int NoiseTextureId = Shader.PropertyToID("_NoiseTexture");
 	private static readonly int NoiseFrequencyId = Shader.PropertyToID("_NoiseFrequency");
 	private static readonly int NoiseMinMaxId = Shader.PropertyToID("_NoiseMinMax");
@@ -402,6 +403,8 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 		volumetricFogMaterial.SetColor(AmbienceColorId, fogVolume.ambienceColor.value);
 		volumetricFogMaterial.SetFloat(APVContributionWeigthId, enableAPVContribution ? fogVolume.APVContributionWeight.value : 0.0f);
 		volumetricFogMaterial.SetFloat(ReflectionProbesContributionWeightId, enableReflectionProbesContribution ? fogVolume.reflectionProbesContributionWeight.value : 0.0f);
+		if (anyVolumeModifierActive)
+			volumetricFogMaterial.SetFloat(VolumeModifierWeightId, fogVolume.volumeModifierWeight.value);
 		volumetricFogMaterial.SetTexture(NoiseTextureId, enableNoise ? fogVolume.noiseTexture.value : null);
 		volumetricFogMaterial.SetFloat(NoiseFrequencyId, enableNoise ? (1.0f / fogVolume.noiseScale.value) : float.MaxValue);
 		volumetricFogMaterial.SetVector(NoiseMinMaxId, enableNoise ? new Vector2(fogVolume.noiseMinMax.value.x, fogVolume.noiseMinMax.value.y) : Vector2.zero);

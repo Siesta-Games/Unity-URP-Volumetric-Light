@@ -26,6 +26,7 @@ int _FrameCount;
 #if _VOLUME_MODIFIER
 float3 _VolumeModifierPos;
 float3 _VolumeModifierParams;
+float _VolumeModifierWeight;
 #endif
 uint _CustomAdditionalLightsCount;
 float _Distance;
@@ -319,8 +320,13 @@ float4 VolumetricFog(float2 uv, float2 positionCS)
         float3 currPosWS = roNearPlane + rd * dist;
 
         float density = GetFogDensity(currPosWS);
+        float originalDensity = density;
         density = CalculateDensityWithVolumeModifier(density, currPosWS);
-                    
+
+#if _VOLUME_MODIFIER
+        density = lerp(originalDensity, density, _VolumeModifierWeight);
+#endif
+
         UNITY_BRANCH
         if (density <= 0.001)
         {
