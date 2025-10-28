@@ -26,6 +26,7 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 	private SerializedDataParameter APVContributionWeight;
 	private SerializedDataParameter enableReflectionProbesContribution;
 	private SerializedDataParameter reflectionProbesContributionWeight;
+	private SerializedDataParameter volumeModWeight;
 
 	private SerializedDataParameter noiseMode;
 	private SerializedDataParameter noiseTexture;
@@ -73,6 +74,7 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 		APVContributionWeight = Unpack(pf.Find(x => x.APVContributionWeight));
 		enableReflectionProbesContribution = Unpack(pf.Find(x => x.reflectionProbesContribution));
 		reflectionProbesContributionWeight = Unpack(pf.Find(x => x.reflectionProbesContributionWeight));
+		volumeModWeight = Unpack(pf.Find(x => x.volumeModifierWeight));
 
 		noiseMode = Unpack(pf.Find(x => x.noiseMode));
 		noiseTexture = Unpack(pf.Find(x => x.noiseTexture));
@@ -134,6 +136,7 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 		PropertyField(enableReflectionProbesContribution);
 		if (enabledReflectionProbesContribution)
 			PropertyField(reflectionProbesContributionWeight);
+		PropertyField(volumeModWeight);
 
 		PropertyField(noiseMode);
 		if (enabledNoise || enabledDistortion)
