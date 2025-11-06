@@ -130,12 +130,12 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 		}
 		PropertyField(additionalLightsContribution);
 		PropertyField(ambienceColor);
-		PropertyField(enableAPVContribution);
-		if (enabledAPVContribution)
-			PropertyField(APVContributionWeight);
-		PropertyField(enableReflectionProbesContribution);
-		if (enabledReflectionProbesContribution)
-			PropertyField(reflectionProbesContributionWeight);
+		//PropertyField(enableAPVContribution);
+		//if (enabledAPVContribution)
+		//	PropertyField(APVContributionWeight);
+		//PropertyField(enableReflectionProbesContribution);
+		//if (enabledReflectionProbesContribution)
+		//	PropertyField(reflectionProbesContributionWeight);
 		PropertyField(volumeModWeight);
 
 		PropertyField(noiseMode);
