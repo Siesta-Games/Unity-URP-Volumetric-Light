@@ -6,7 +6,7 @@
 #include "./Utils.hlsl"
 
 // Upsamples the given texture using both the downsampled and full resolution depth information.
-float4 DepthAwareUpsample(float2 uv, TEXTURE2D_X(textureToUpsample))
+float4 DepthAwareUpsample(float2 uv, TEXTURE2D_X(textureToUpsample), float fullResLinearEyeDepth)
 {
     float2 downsampledTexelSize = _DownsampledCameraDepthTexture_TexelSize.xy;
     float2 downsampledTopLeftCornerUv = uv - (downsampledTexelSize * 0.5);
@@ -20,8 +20,6 @@ float4 DepthAwareUpsample(float2 uv, TEXTURE2D_X(textureToUpsample))
 
     float4 downsampledDepths = GATHER_RED_TEXTURE2D_X(_DownsampledCameraDepthTexture, sampler_PointClamp, uv);
 
-    float fullResDepth = SampleSceneDepth(uv);
-    float fullResLinearEyeDepth = LinearEyeDepthConsiderProjection(fullResDepth);
     float relativeDepthThreshold = fullResLinearEyeDepth * 0.1;
     
     float linearEyeDepth = LinearEyeDepthConsiderProjection(downsampledDepths[0]);

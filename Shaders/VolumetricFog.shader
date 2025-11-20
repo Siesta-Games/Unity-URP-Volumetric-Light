@@ -163,15 +163,65 @@ Shader "Hidden/VolumetricFog"
             #pragma vertex Vert
             #pragma fragment Frag
 
+            #pragma multi_compile_local_fragment _ _DEFERRED_FOG
+            #pragma multi_compile_local_fragment _ _DEFERRED_FOG_DEBUG
+
             TEXTURE2D_X(_VolumetricFogTexture);
             SAMPLER(sampler_BlitTexture);
+
+            float _DeferredFogBaseHeight;
+            float _DeferredFogMaximumHeight;
+            float _DeferredFogMaxDistance;
+            float _DeferredFogStart;
+            float _DeferredFogEnd;
+            float _DeferredFogDensity;
+            float3 _DeferredFogColor;
+
+            float GetDeferredFogHeightDensity(float3 posWS)
+            {
+                float heightT = saturate((posWS.y - _DeferredFogBaseHeight) / (_DeferredFogMaximumHeight - _DeferredFogBaseHeight));
+                heightT= 1.0 - heightT;
+
+                float density = _DeferredFogDensity * heightT;
+                return density;
+            }
 
             float4 Frag(Varyings input) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-                float4 volumetricFog = DepthAwareUpsample(input.texcoord, _VolumetricFogTexture);
+                // sample depth
+                float depth = SampleSceneDepth(input.texcoord);
+                float fullResLinearEyeDepth = LinearEyeDepthConsiderProjection(depth);
+                
+                // get the volumetric fog and get the current camera color
+                float4 volumetricFog = DepthAwareUpsample(input.texcoord, _VolumetricFogTexture, fullResLinearEyeDepth);
                 float4 cameraColor = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_BlitTexture, input.texcoord);
+
+                #if _DEFERRED_FOG
+                    // clamp depth to a maximum value to avoid extreme fogging at far distances
+                    fullResLinearEyeDepth = clamp(fullResLinearEyeDepth, 0.0, _DeferredFogMaxDistance);
+                    
+                    // get a factor based on height to reduce fog density at higher altitudes
+                    float3 posWS = ComputeWorldSpacePosition(input.texcoord, depth, UNITY_MATRIX_I_VP);
+                    float density = GetDeferredFogHeightDensity(posWS);
+
+                    // make it exponential but with additional control over falloff
+                    //float fog = 1.0 / exp(pow(fullResLinearEyeDepth * density, _DeferredFogPower));
+
+                    // make fog linear, gives better control given our camera angle
+                    float fog = saturate((_DeferredFogEnd - fullResLinearEyeDepth) / (_DeferredFogEnd - _DeferredFogStart));
+                    fog = 1.0 - fog;
+                    fog *= density;
+
+                    // debug deferred fog
+                    #if _DEFERRED_FOG_DEBUG
+                        return float4(fog.xxx * _DeferredFogColor.rgb, 1.0);
+                    #endif
+
+                    // apply deferred fog to the camera color before combining with volumetric fog, which should be applied later
+                    cameraColor.rgb = lerp(cameraColor.rgb, _DeferredFogColor, fog);
+                #endif
 
                 return float4(cameraColor.rgb * volumetricFog.a + volumetricFog.rgb, cameraColor.a);
             }

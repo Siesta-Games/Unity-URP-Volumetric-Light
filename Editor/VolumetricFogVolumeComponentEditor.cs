@@ -38,6 +38,16 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 	private SerializedDataParameter distortionIntensity;
 	private SerializedDataParameter distortionVelocity;
 
+	private SerializedDataParameter enableDeferredFog;
+	private SerializedDataParameter deferredFogBaseHeight;
+	private SerializedDataParameter deferredFogMaximumHeight;
+	private SerializedDataParameter deferredFogMaxDistance;
+	private SerializedDataParameter deferredFogStart;
+	private SerializedDataParameter deferredFogEnd;
+	private SerializedDataParameter deferredFogDensity;
+	private SerializedDataParameter deferredFogColor;
+	private SerializedDataParameter deferredFogDebug;
+
 	private SerializedDataParameter renderPassEvent;
 	private SerializedDataParameter resolution;
 	private SerializedDataParameter maximumSteps;
@@ -86,6 +96,16 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 		distortionIntensity = Unpack(pf.Find(x => x.distortionIntensity));
 		distortionVelocity = Unpack(pf.Find(x => x.distortionVelocity));
 
+		enableDeferredFog = Unpack(pf.Find(x => x.enableDeferredFog));
+		deferredFogBaseHeight = Unpack(pf.Find(x => x.deferredFogBaseHeight));
+		deferredFogMaximumHeight = Unpack(pf.Find(x => x.deferredFogMaximumHeight));
+		deferredFogMaxDistance = Unpack(pf.Find(x => x.deferredFogMaxDistance));
+		deferredFogStart = Unpack(pf.Find(x => x.deferredFogStart));
+		deferredFogEnd = Unpack(pf.Find(x => x.deferredFogEnd));
+		deferredFogDensity = Unpack(pf.Find(x => x.deferredFogDensity));
+		deferredFogColor = Unpack(pf.Find(x => x.deferredFogColor));
+		deferredFogDebug = Unpack(pf.Find(x => x.deferredFogDebug));
+
 		renderPassEvent = Unpack(pf.Find(x => x.renderPassEvent));
 		resolution = Unpack(pf.Find(x => x.resolution));
 		maximumSteps = Unpack(pf.Find(x => x.maximumSteps));
@@ -113,6 +133,7 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 		bool enabledReflectionProbesContribution = enableReflectionProbesContribution.overrideState.boolValue && enableReflectionProbesContribution.value.boolValue;
 		bool enabledNoise = noiseMode.overrideState.boolValue && noiseMode.value.enumValueIndex == (int)VolumetricFogNoiseMode.Noise3DTexture;
 		bool enabledDistortion = noiseMode.overrideState.boolValue && noiseMode.value.enumValueIndex == (int)VolumetricFogNoiseMode.NoiseAndDistortion3DTextures;
+		bool enabledDeferredFog = enableDeferredFog.overrideState.boolValue && enableDeferredFog.value.boolValue;
 
 		PropertyField(distance);
 		PropertyField(baseHeight);
@@ -152,6 +173,20 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 			PropertyField(distortionScale);
 			PropertyField(distortionIntensity);
 			PropertyField(distortionVelocity);
+		}
+
+		PropertyField(enableDeferredFog);
+		if (enabledDeferredFog)
+		{
+			// we are going to use a fixed 0 value for now
+			//PropertyField(deferredFogBaseHeight);
+			PropertyField(deferredFogMaximumHeight);
+			PropertyField(deferredFogMaxDistance);
+			PropertyField(deferredFogStart);
+			PropertyField(deferredFogEnd);
+			PropertyField(deferredFogDensity);
+			PropertyField(deferredFogColor);
+			PropertyField(deferredFogDebug);
 		}
 
 		PropertyField(renderPassEvent);

@@ -70,6 +70,17 @@ public sealed class VolumetricFogVolumeComponent : VolumeComponent, IPostProcess
 	[Tooltip("The velocity of distortion in each axii.")]
 	public Vector3Parameter distortionVelocity = new Vector3Parameter(new Vector3(-0.02f, 0.01f, 0.015f));
 
+	[Header("Deferred Fog")]
+	public BoolParameter enableDeferredFog = new BoolParameter(false, BoolParameter.DisplayType.Checkbox, true);
+	public FloatParameter deferredFogBaseHeight = new FloatParameter(0.0f);
+	public FloatParameter deferredFogMaximumHeight = new FloatParameter(20000.0f);
+	public MinFloatParameter deferredFogMaxDistance = new MinFloatParameter(15.0f, 0.0f);
+	public MinFloatParameter deferredFogStart = new MinFloatParameter(1.0f, 0.0f);
+	public MinFloatParameter deferredFogEnd = new MinFloatParameter(1.0f, 0.0f);
+	public ClampedFloatParameter deferredFogDensity = new ClampedFloatParameter(0.0f, 0.0f, 1.0f);
+	public ColorParameter deferredFogColor = new ColorParameter(Color.grey, false, true, true);
+	public BoolParameter deferredFogDebug = new BoolParameter(false, BoolParameter.DisplayType.Checkbox, true);
+
 	[Header("Misc. & Quality")]
 	[Tooltip("The URP render pass event to render the volumetric fog.")]
 	public VolumetricFogRenderPassEventParameter renderPassEvent = new VolumetricFogRenderPassEventParameter(VolumetricFogConstants.DefaultVolumetricFogRenderPassEvent);
@@ -143,8 +154,9 @@ public sealed class VolumetricFogVolumeComponent : VolumeComponent, IPostProcess
 		}
 		else
 		{
-			noiseTexture.value = null;
-			distortionTexture.value = null;
+			// Don't reset to none as it messes with editor playmode testing and it won't make a substantial difference
+			//noiseTexture.value = null;
+			//distortionTexture.value = null;
 		}
 #endif
 	}

@@ -101,6 +101,14 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 	private static readonly int MaximumStepsId = Shader.PropertyToID("_MaximumSteps");
 	private static readonly int MinimumStepSizeId = Shader.PropertyToID("_MinimumStepSize");
 
+	private static readonly int DeferredFogBaseHeightId = Shader.PropertyToID("_DeferredFogBaseHeight");
+	private static readonly int DeferredFogMaximumHeightId = Shader.PropertyToID("_DeferredFogMaximumHeight");
+	private static readonly int DeferredFogMaxDistanceId = Shader.PropertyToID("_DeferredFogMaxDistance");
+	private static readonly int DeferredFogStartId = Shader.PropertyToID("_DeferredFogStart");
+	private static readonly int DeferredFogEndId = Shader.PropertyToID("_DeferredFogEnd");
+	private static readonly int DeferredFogDensityId = Shader.PropertyToID("_DeferredFogDensity");
+	private static readonly int DeferredFogColorId = Shader.PropertyToID("_DeferredFogColor");
+
 	private static readonly int AnisotropiesArrayId = Shader.PropertyToID("_Anisotropies");
 	private static readonly int ScatteringsArrayId = Shader.PropertyToID("_Scatterings");
 	private static readonly int RadiiSqArrayId = Shader.PropertyToID("_RadiiSq");
@@ -352,40 +360,15 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 		bool enableDistortion = fogVolume.noiseMode.value == VolumetricFogNoiseMode.NoiseAndDistortion3DTextures && fogVolume.distortionTexture.value != null && fogVolume.distortionScale.value > 0.0f;
 		enableNoise = enableNoise || enableDistortion;
 
-		if (anyVolumeModifierActive)
-			volumetricFogMaterial.EnableKeyword("_VOLUME_MODIFIER");
-		else
-			volumetricFogMaterial.DisableKeyword("_VOLUME_MODIFIER");
-
-		if (enableAPVContribution)
-			volumetricFogMaterial.EnableKeyword("_APV_CONTRIBUTION");
-		else
-			volumetricFogMaterial.DisableKeyword("_APV_CONTRIBUTION");
-
-		if (enableReflectionProbesContribution)
-			volumetricFogMaterial.EnableKeyword("_REFLECTION_PROBES_CONTRIBUTION");
-		else
-			volumetricFogMaterial.DisableKeyword("_REFLECTION_PROBES_CONTRIBUTION");
-
-		if (enableMainLightContribution)
-			volumetricFogMaterial.EnableKeyword("_MAIN_LIGHT_CONTRIBUTION");
-		else
-			volumetricFogMaterial.DisableKeyword("_MAIN_LIGHT_CONTRIBUTION");
-
-		if (enableAdditionalLightsContribution)
-			volumetricFogMaterial.EnableKeyword("_ADDITIONAL_LIGHTS_CONTRIBUTION");
-		else
-			volumetricFogMaterial.DisableKeyword("_ADDITIONAL_LIGHTS_CONTRIBUTION");
-
-		if (enableNoise)
-			volumetricFogMaterial.EnableKeyword("_NOISE");
-		else
-			volumetricFogMaterial.DisableKeyword("_NOISE");
-
-		if (enableDistortion)
-			volumetricFogMaterial.EnableKeyword("_NOISE_DISTORTION");
-		else
-			volumetricFogMaterial.DisableKeyword("_NOISE_DISTORTION");
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_VOLUME_MODIFIER", anyVolumeModifierActive);
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_APV_CONTRIBUTION", enableAPVContribution);
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_REFLECTION_PROBES_CONTRIBUTION", enableReflectionProbesContribution);
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_MAIN_LIGHT_CONTRIBUTION", enableMainLightContribution);
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_ADDITIONAL_LIGHTS_CONTRIBUTION", enableAdditionalLightsContribution);
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_NOISE", enableNoise);
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_NOISE_DISTORTION", enableDistortion);
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_DEFERRED_FOG", fogVolume.enableDeferredFog.value);
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_DEFERRED_FOG_DEBUG", fogVolume.enableDeferredFog.value && fogVolume.deferredFogDebug.value);
 
 		UpdateLightsParameters(volumetricFogMaterial, fogVolume, enableMainLightContribution, enableAdditionalLightsContribution, mainLightIndex, visibleLights);
 
@@ -415,6 +398,14 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 		volumetricFogMaterial.SetVector(DistortionVelocityId, enableDistortion ? fogVolume.distortionVelocity.value : Vector3.zero);
 		volumetricFogMaterial.SetInteger(MaximumStepsId, fogVolume.maximumSteps.value);
 		volumetricFogMaterial.SetFloat(MinimumStepSizeId, fogVolume.minimumStepSize.value);
+
+		volumetricFogMaterial.SetFloat(DeferredFogBaseHeightId, fogVolume.deferredFogBaseHeight.value);
+		volumetricFogMaterial.SetFloat(DeferredFogMaximumHeightId, fogVolume.deferredFogMaximumHeight.value);
+		volumetricFogMaterial.SetFloat(DeferredFogMaxDistanceId, fogVolume.deferredFogMaxDistance.value);
+		volumetricFogMaterial.SetFloat(DeferredFogStartId, fogVolume.deferredFogStart.value);
+		volumetricFogMaterial.SetFloat(DeferredFogEndId, Mathf.Max(fogVolume.deferredFogStart.value + 0.01f, fogVolume.deferredFogEnd.value));
+		volumetricFogMaterial.SetFloat(DeferredFogDensityId, fogVolume.deferredFogDensity.value);
+		volumetricFogMaterial.SetColor(DeferredFogColorId, fogVolume.deferredFogColor.value);
 	}
 
 	/// <summary>
