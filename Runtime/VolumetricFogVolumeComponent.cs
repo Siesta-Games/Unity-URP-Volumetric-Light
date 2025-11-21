@@ -73,11 +73,11 @@ public sealed class VolumetricFogVolumeComponent : VolumeComponent, IPostProcess
 	[Header("Deferred Fog")]
 	public BoolParameter enableDeferredFog = new BoolParameter(false, BoolParameter.DisplayType.Checkbox, true);
 	public FloatParameter deferredFogBaseHeight = new FloatParameter(0.0f);
-	public FloatParameter deferredFogMaximumHeight = new FloatParameter(20000.0f);
-	public MinFloatParameter deferredFogMaxDistance = new MinFloatParameter(15.0f, 0.0f);
-	public MinFloatParameter deferredFogStart = new MinFloatParameter(1.0f, 0.0f);
-	public MinFloatParameter deferredFogEnd = new MinFloatParameter(1.0f, 0.0f);
-	public ClampedFloatParameter deferredFogDensity = new ClampedFloatParameter(0.0f, 0.0f, 1.0f);
+	public FloatParameter deferredFogMaximumHeight = new FloatParameter(100000.0f);
+	public MinFloatParameter deferredFogMaxDistance = new MinFloatParameter(40.0f, 0.0f);
+	public MinFloatParameter deferredFogStart = new MinFloatParameter(12.5f, 0.0f);
+	public MinFloatParameter deferredFogEnd = new MinFloatParameter(100.0f, 0.0f);
+	public ClampedFloatParameter deferredFogDensity = new ClampedFloatParameter(0.25f, 0.0f, 1.0f);
 	public ColorParameter deferredFogColor = new ColorParameter(Color.grey, false, true, true);
 	public BoolParameter deferredFogDebug = new BoolParameter(false, BoolParameter.DisplayType.Checkbox, true);
 
