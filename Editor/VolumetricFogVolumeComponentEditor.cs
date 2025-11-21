@@ -55,6 +55,7 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 	private SerializedDataParameter blurIterations;
 	private SerializedDataParameter reprojection;
 	private SerializedDataParameter enabled;
+	private SerializedDataParameter enableVolumetricFogDebug;
 
 	#endregion
 
@@ -113,6 +114,7 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 		blurIterations = Unpack(pf.Find(x => x.blurIterations));
 		reprojection = Unpack(pf.Find(x => x.reprojection));
 		enabled = Unpack(pf.Find(x => x.enabled));
+		enableVolumetricFogDebug = Unpack(pf.Find(x => x.volumetricFogDebug));
 	}
 
 	/// <summary>
@@ -196,6 +198,7 @@ public sealed class VolumetricFogVolumeComponentEditor : VolumeComponentEditor
 		PropertyField(blurIterations);
 		PropertyField(reprojection);
 		PropertyField(enabled);
+		PropertyField(enableVolumetricFogDebug);
 	}
 
 	#endregion

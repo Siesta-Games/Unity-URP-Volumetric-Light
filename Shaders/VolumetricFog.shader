@@ -163,8 +163,9 @@ Shader "Hidden/VolumetricFog"
             #pragma vertex Vert
             #pragma fragment Frag
 
-            #pragma multi_compile_local_fragment _ _DEFERRED_FOG
+            #pragma multi_compile_local_fragment _ _VOLUMETRIC_FOG_DEBUG
             #pragma multi_compile_local_fragment _ _DEFERRED_FOG_DEBUG
+            #pragma multi_compile_local_fragment _ _DEFERRED_FOG
 
             TEXTURE2D_X(_VolumetricFogTexture);
             SAMPLER(sampler_BlitTexture);
@@ -182,6 +183,8 @@ Shader "Hidden/VolumetricFog"
                 float heightT = saturate((posWS.y - _DeferredFogBaseHeight) / (_DeferredFogMaximumHeight - _DeferredFogBaseHeight));
                 heightT= 1.0 - heightT;
 
+                // square to have a smoother falloff
+                heightT = heightT * heightT; 
                 float density = _DeferredFogDensity * heightT;
                 return density;
             }
@@ -197,6 +200,10 @@ Shader "Hidden/VolumetricFog"
                 // get the volumetric fog and get the current camera color
                 float4 volumetricFog = DepthAwareUpsample(input.texcoord, _VolumetricFogTexture, fullResLinearEyeDepth);
                 float4 cameraColor = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_BlitTexture, input.texcoord);
+
+                #if _VOLUMETRIC_FOG_DEBUG && !_DEFERRED_FOG_DEBUG
+                    return volumetricFog;
+                #endif
 
                 #if _DEFERRED_FOG
                     // clamp depth to a maximum value to avoid extreme fogging at far distances
@@ -214,15 +221,19 @@ Shader "Hidden/VolumetricFog"
                     fog = 1.0 - fog;
                     fog *= density;
 
-                    // debug deferred fog
-                    #if _DEFERRED_FOG_DEBUG
+                    // debug deferred fog or deferred fog + volumetric fog
+                    #if (_DEFERRED_FOG_DEBUG && !_VOLUMETRIC_FOG_DEBUG)
                         return float4(fog.xxx * _DeferredFogColor.rgb, 1.0);
+                    #elif (_VOLUMETRIC_FOG_DEBUG && _DEFERRED_FOG_DEBUG)
+                        //apply the deferred fog and the volumetric fog on top
+                        float3 deferredFog = fog.xxx * _DeferredFogColor.rgb;
+                        return float4(deferredFog.rgb * volumetricFog.a + volumetricFog.rgb, cameraColor.a);
                     #endif
 
                     // apply deferred fog to the camera color before combining with volumetric fog, which should be applied later
                     cameraColor.rgb = lerp(cameraColor.rgb, _DeferredFogColor, fog);
                 #endif
-
+                
                 return float4(cameraColor.rgb * volumetricFog.a + volumetricFog.rgb, cameraColor.a);
             }
 

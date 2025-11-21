@@ -368,7 +368,10 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 		CoreUtils.SetKeyword(volumetricFogMaterial, "_NOISE", enableNoise);
 		CoreUtils.SetKeyword(volumetricFogMaterial, "_NOISE_DISTORTION", enableDistortion);
 		CoreUtils.SetKeyword(volumetricFogMaterial, "_DEFERRED_FOG", fogVolume.enableDeferredFog.value);
-		CoreUtils.SetKeyword(volumetricFogMaterial, "_DEFERRED_FOG_DEBUG", fogVolume.enableDeferredFog.value && fogVolume.deferredFogDebug.value);
+
+		bool debugEnabled = Application.isEditor;
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_DEFERRED_FOG_DEBUG", debugEnabled && fogVolume.enableDeferredFog.value && fogVolume.deferredFogDebug.value);
+		CoreUtils.SetKeyword(volumetricFogMaterial, "_VOLUMETRIC_FOG_DEBUG", debugEnabled && fogVolume.volumetricFogDebug.value);
 
 		UpdateLightsParameters(volumetricFogMaterial, fogVolume, enableMainLightContribution, enableAdditionalLightsContribution, mainLightIndex, visibleLights);
 

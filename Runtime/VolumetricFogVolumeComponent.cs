@@ -96,6 +96,7 @@ public sealed class VolumetricFogVolumeComponent : VolumeComponent, IPostProcess
 	public BoolParameter reprojection = new BoolParameter(false, BoolParameter.DisplayType.Checkbox, true);
 	[Tooltip("Disabling this will completely remove any feature from the volumetric fog from being rendered at all.")]
 	public BoolParameter enabled = new BoolParameter(false, BoolParameter.DisplayType.Checkbox, true);
+	public BoolParameter volumetricFogDebug = new BoolParameter(false, BoolParameter.DisplayType.Checkbox, true);
 
 	#endregion
 
