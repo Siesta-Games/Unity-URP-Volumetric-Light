@@ -18,7 +18,7 @@ public sealed class VolumetricAdditionalLight : MonoBehaviour
 	[Range(0.0f, 16.0f)]
 	[SerializeField] private float scattering = 1.0f;
 	[Tooltip("Sets a falloff radius for this light. A higher value reduces noise towards the origin of the light.")]
-	[Range(0.0f, 1.0f)]
+	[Range(0.0f, 16.0f)]
 	[SerializeField] private float radius = 0.0f;
 
 	#endregion
