@@ -354,8 +354,11 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 		bool anyVolumeModifierActive = GetVolumeModifierMaterialProperties(out Vector3 volumeModifierPos, out Vector3 volumeModifierParams);
 		bool enableMainLightContribution = fogVolume.mainLightContribution.value && fogVolume.mainLightScattering.value > 0.0f && mainLightIndex > -1;
 		bool enableAdditionalLightsContribution = fogVolume.additionalLightsContribution.value && additionalLightsCount > 0;
-		bool enableAPVContribution = fogVolume.APVContribution.value && fogVolume.APVContributionWeight.value > 0.0f;
-		bool enableReflectionProbesContribution = fogVolume.reflectionProbesContribution.value && fogVolume.reflectionProbesContributionWeight.value > 0.0f;
+
+		// remove apv and reflection probes contribution for now as we just fake it with ambience color which is free
+		bool enableAPVContribution = false;//fogVolume.APVContribution.value && fogVolume.APVContributionWeight.value > 0.0f;
+		bool enableReflectionProbesContribution = false;//fogVolume.reflectionProbesContribution.value && fogVolume.reflectionProbesContributionWeight.value > 0.0f;
+
 		bool enableNoise = fogVolume.noiseMode.value == VolumetricFogNoiseMode.Noise3DTexture && fogVolume.noiseTexture.value != null && fogVolume.noiseScale.value > 0.0f;
 		bool enableDistortion = fogVolume.noiseMode.value == VolumetricFogNoiseMode.NoiseAndDistortion3DTextures && fogVolume.distortionTexture.value != null && fogVolume.distortionScale.value > 0.0f;
 		enableNoise = enableNoise || enableDistortion;
