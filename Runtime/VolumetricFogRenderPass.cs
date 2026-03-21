@@ -246,8 +246,8 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 				builder.SetRenderFunc((PassData data, RasterGraphContext context) => ExecutePass(data, context));
 			}
 
-			RenderGraphUtils.AddCopyPass(renderGraph, texHandles.downsampledCameraDepthTarget, texHandles.prevFrameDownsampledCameraDepthTarget, "Downsampled Depth Copy Pass");
 			RenderGraphUtils.AddCopyPass(renderGraph, texHandles.volumetricFogReprojectionTarget, texHandles.volumetricFogHistoryTarget, "Volumetric Fog History Copy Pass");
+			RenderGraphUtils.AddCopyPass(renderGraph, texHandles.downsampledCameraDepthTarget, texHandles.prevFrameDownsampledCameraDepthTarget, "Downsampled Depth Copy Pass");
 		}
 
 		TextureHandle lastFogRenderTarget = isReprojectionEnabledForTick ? texHandles.volumetricFogReprojectionTarget : texHandles.volumetricFogRenderTarget;
