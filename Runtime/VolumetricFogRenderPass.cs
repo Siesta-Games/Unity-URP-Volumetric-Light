@@ -355,7 +355,8 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 		bool enableMainLightContribution = fogVolume.mainLightContribution.value && fogVolume.mainLightScattering.value > 0.0f && mainLightIndex > -1;
 		bool enableAdditionalLightsContribution = fogVolume.additionalLightsContribution.value && additionalLightsCount > 0;
 
-		// remove apv and reflection probes contribution for now as we just fake it with ambience color which is free
+		// remove apv and reflection probes contribution for now as we just fake it with ambience
+		// color which is free
 		bool enableAPVContribution = false;//fogVolume.APVContribution.value && fogVolume.APVContributionWeight.value > 0.0f;
 		bool enableReflectionProbesContribution = false;//fogVolume.reflectionProbesContribution.value && fogVolume.reflectionProbesContributionWeight.value > 0.0f;
 
@@ -478,7 +479,14 @@ public sealed class VolumetricFogRenderPass : ScriptableRenderPass
 	/// <returns></returns>
 	private static bool GetVolumeModifierMaterialProperties(out Vector3 pos, out Vector3 volumeModifierParams)
 	{
-		VolumetricFogVolumeModifier volumeModifier = Object.FindAnyObjectByType<VolumetricFogVolumeModifier>(FindObjectsInactive.Exclude);
+		VolumetricFogVolumeModifier volumeModifier = VolumetricFogVolumeModifier.Instance;
+
+		// we rely on the instance that is set on awake, so in the editor while editing the scene
+		// try to find it...
+#if UNITY_EDITOR
+		if (!Application.isPlaying && volumeModifier == null)
+			volumeModifier = Object.FindAnyObjectByType<VolumetricFogVolumeModifier>(FindObjectsInactive.Exclude);
+#endif
 
 		pos = Vector3.zero;
 		volumeModifierParams = Vector3.zero;
