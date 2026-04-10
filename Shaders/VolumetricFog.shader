@@ -24,17 +24,17 @@ Shader "Hidden/VolumetricFog"
 
             #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
 
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE //_MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _LIGHT_COOKIES
-            #pragma multi_compile_fragment _ PROBE_VOLUMES_L1 PROBE_VOLUMES_L2
+            //#pragma multi_compile_fragment _ PROBE_VOLUMES_L1 PROBE_VOLUMES_L2
 
             #pragma multi_compile_local_fragment _ _VOLUME_MODIFIER
             #pragma multi_compile_local_fragment _ _MAIN_LIGHT_CONTRIBUTION
             #pragma multi_compile_local_fragment _ _ADDITIONAL_LIGHTS_CONTRIBUTION
-            #pragma multi_compile_local_fragment _ _APV_CONTRIBUTION
-            #pragma multi_compile_local_fragment _ _REFLECTION_PROBES_CONTRIBUTION
+            //#pragma multi_compile_local_fragment _ _APV_CONTRIBUTION
+            //#pragma multi_compile_local_fragment _ _REFLECTION_PROBES_CONTRIBUTION
             #pragma multi_compile_local_fragment _ _NOISE
             #pragma multi_compile_local_fragment _ _NOISE_DISTORTION
             
@@ -163,8 +163,8 @@ Shader "Hidden/VolumetricFog"
             #pragma vertex Vert
             #pragma fragment Frag
 
-            #pragma multi_compile_local_fragment _ _VOLUMETRIC_FOG_DEBUG
-            #pragma multi_compile_local_fragment _ _DEFERRED_FOG_DEBUG
+            //#pragma multi_compile_local_fragment _ _VOLUMETRIC_FOG_DEBUG
+            //#pragma multi_compile_local_fragment _ _DEFERRED_FOG_DEBUG
             #pragma multi_compile_local_fragment _ _DEFERRED_FOG
 
             TEXTURE2D_X(_VolumetricFogTexture);
